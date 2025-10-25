@@ -1,20 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package Home;
+package Main;
 
-/**
- *
- * @author smrsa
- */
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class Home extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Home
-     */
+    private final List<Student> students = new ArrayList<>();
+
     public Home() {
         initComponents();
+        initData();
+        refreshTables(students);
     }
 
     /**
@@ -164,11 +162,11 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField4)
                     .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(update)
-                .addGap(86, 86, 86))
+                .addGap(92, 92, 92))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,7 +191,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
+                .addGap(54, 54, 54)
                 .addComponent(update)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -217,11 +215,11 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(Search)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(refresh)))
-                .addGap(201, 201, 201)
+                .addGap(127, 127, 127)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(241, Short.MAX_VALUE))
+                .addContainerGap(315, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,8 +324,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
-        // TODO add your handling code here:
-
+        jTextField1.setText("");
+        refreshTables(students);
     }//GEN-LAST:event_refreshActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -335,12 +333,91 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
-        // TODO add your handling code here:
+      
+        String q = jTextField1.getText().trim().toLowerCase();
+        if (q.isEmpty()) {
+            refreshTables(students);
+            return;
+        }
+        List<Student> filtered = new ArrayList<>();
+        for (Student s : students) {
+            if (s.getId().toLowerCase().equals(q) || s.getFullName().toLowerCase().contains(q)) {
+                filtered.add(s);
+            }
+        }
+        refreshTables(filtered);
     }//GEN-LAST:event_SearchActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void updateActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = Students.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a student in the table to update.");
+            return;
+        }
+        String name = jTextField2.getText().trim();
+        String gender = (String) jComboBox1.getSelectedItem();
+        String dept = jTextField3.getText().trim();
+        String ageStr = jTextField4.getText().trim();
+        String gpaStr = jTextField5.getText().trim();
+        int age;
+        double gpa;
+        try {
+            age = Integer.parseInt(ageStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Age must be an integer.");
+            return;
+        }
+        try {
+            gpa = Double.parseDouble(gpaStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "GPA must be a number.");
+            return;
+        }
+        String id = (String) Students.getValueAt(row, 0);
+        for (Student s : students) {
+            if (s.getId().equals(id)) {
+                s.setFullName(name);
+                s.setGender(gender);
+                s.setDepartment(dept);
+                s.setAge(age);
+                s.setGpa(gpa);
+                break;
+            }
+        }
+        refreshTables(students);
+    }
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = Students1.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a student to delete.");
+            return;
+        }
+        String id = (String) Students1.getValueAt(row, 0);
+        students.removeIf(s -> s.getId().equals(id));
+        refreshTables(students);
+    }
+
+    private void initData() {
+        students.clear();
+        students.add(new Student("1001", "Alice Johnson", "Female", "CS", 20, 3.7));
+        students.add(new Student("1002", "Bob Smith", "Male", "EE", 22, 3.2));
+        students.add(new Student("1003", "Carol White", "Female", "Math", 21, 3.9));
+    }
+
+    private void refreshTables(List<Student> list) {
+        DefaultTableModel m1 = (DefaultTableModel) Students.getModel();
+        DefaultTableModel m2 = (DefaultTableModel) Students1.getModel();
+        m1.setRowCount(0);
+        m2.setRowCount(0);
+        for (Student s : list) {
+            Object[] row = new Object[]{s.getId(), s.getFullName(), s.getGender(), s.getDepartment(), s.getAge(), s.getGpa()};
+            m1.addRow(row);
+            m2.addRow(row);
+        }
+    }
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
