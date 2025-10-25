@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="update">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/update/dist/update.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
