@@ -13,6 +13,17 @@ public class Home extends javax.swing.JFrame {
         initComponents();
         initData();
         refreshTables(students);
+        // Attach listeners outside guarded code so GUI builder won't remove them
+        update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateActionPerformed(evt);
+            }
+        });
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
     }
 
     /**
@@ -52,6 +63,7 @@ public class Home extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         Students1 = new javax.swing.JTable();
         delete = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,7 +129,15 @@ public class Home extends javax.swing.JFrame {
             new String [] {
                 "Student ID", "Full Name", "Gender", "Departement", "Age", "GPA"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(Students);
 
         jPanel5.setBackground(java.awt.SystemColor.activeCaption);
@@ -249,12 +269,29 @@ public class Home extends javax.swing.JFrame {
             new String [] {
                 "Student ID", "Full Name", "Gender", "Departement", "Age", "GPA"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(Students1);
 
         delete.setBackground(new java.awt.Color(0, 0, 0));
         delete.setForeground(new java.awt.Color(255, 255, 255));
         delete.setText("Delete");
+
+        jButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -266,17 +303,21 @@ public class Home extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 663, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(589, 589, 589)
-                        .addComponent(delete)))
-                .addContainerGap(734, Short.MAX_VALUE))
+                        .addGap(516, 516, 516)
+                        .addComponent(delete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)))
+                .addContainerGap(731, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(delete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(delete)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
                 .addGap(22, 22, 22))
         );
 
@@ -348,6 +389,12 @@ public class Home extends javax.swing.JFrame {
         refreshTables(filtered);
     }//GEN-LAST:event_SearchActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+         jTextField1.setText("");
+        refreshTables(students);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {
         int row = Students.getSelectedRow();
         if (row < 0) {
@@ -373,6 +420,22 @@ public class Home extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "GPA must be a number.");
             return;
         }
+        if (name.isEmpty() || !name.matches("[A-Za-z ]+")) {
+            JOptionPane.showMessageDialog(this, "Name must contain only letters and spaces, and cannot be empty.");
+            return;
+        }
+        if (dept.isEmpty() || !dept.matches("[A-Za-z ]+")) {
+            JOptionPane.showMessageDialog(this, "Department must contain only letters and spaces, and cannot be empty.");
+            return;
+        }
+        if (age < 18 || age > 90) {
+            JOptionPane.showMessageDialog(this, "Age must be between 18 and 90.");
+            return;
+        }
+        if (gpa < 0.0 || gpa > 4.0) {
+            JOptionPane.showMessageDialog(this, "GPA must be between 0.0 and 4.0.");
+            return;
+        }
         String id = (String) Students.getValueAt(row, 0);
         for (Student s : students) {
             if (s.getId().equals(id)) {
@@ -394,8 +457,20 @@ public class Home extends javax.swing.JFrame {
             return;
         }
         String id = (String) Students1.getValueAt(row, 0);
+        String name = (String) Students1.getValueAt(row, 1);
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Delete student " + name + " (ID: " + id + ")?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (choice != JOptionPane.YES_OPTION) {
+            return;
+        }
         students.removeIf(s -> s.getId().equals(id));
         refreshTables(students);
+        JOptionPane.showMessageDialog(this, "Student deleted.");
     }
 
     private void initData() {
@@ -455,6 +530,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JTable Students;
     private javax.swing.JTable Students1;
     private javax.swing.JButton delete;
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
