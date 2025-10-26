@@ -13,7 +13,7 @@ public class Home extends javax.swing.JFrame {
         public Home() {
                 initComponents();
                 refreshTables(manager.getAllStudents());
-                // Attach listeners outside guarded code so GUI builder won't remove them
+              
 
                 update.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
