@@ -4,5 +4,12 @@ import java.io.IOException;
 import javax.swing.table.DefaultTableModel;
 
 public class ViewStudentCode {
-    
+
+    public static void loadStudents(DefaultTableModel tableModel){
+        tableModel.setRowCount(0);
+        String fileName = "Students.txt";
+        FileReader fileReader = null;
+        BufferedReader bufferReader = null ;
+        
+    }
 }
