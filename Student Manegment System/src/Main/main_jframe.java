@@ -1,8 +1,11 @@
+package Main;
+
 import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
 
 public class main_jframe extends javax.swing.JFrame {
 DefaultTableModel viewModel;
+private Main.Home homeWindow;
 
 public main_jframe() {
     initComponents();
@@ -34,6 +37,7 @@ public main_jframe() {
 
 
     cl.show(mainPanel, "Home");
+    homeWindow = new Main.Home();
 }
 
 
@@ -375,8 +379,12 @@ public main_jframe() {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-    CardLayout cl = (CardLayout)(getContentPane().getLayout());
-    cl.show(getContentPane(), "SearchStudent");
+    if (homeWindow == null) {
+        homeWindow = new Main.Home();
+    }
+    homeWindow.setVisible(true);
+    homeWindow.toFront();
+    homeWindow.goToUpdateSearch();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -385,13 +393,21 @@ public main_jframe() {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    CardLayout cl = (CardLayout)(getContentPane().getLayout());
-    cl.show(getContentPane(), "UpdateStudents");
+    if (homeWindow == null) {
+        homeWindow = new Home();
+    }
+    homeWindow.setVisible(true);
+    homeWindow.toFront();
+    homeWindow.goToUpdateSearch();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-    CardLayout cl = (CardLayout)(getContentPane().getLayout());
-    cl.show(getContentPane(), "DeleteStudent");
+    if (homeWindow == null) {
+        homeWindow = new Home();
+    }
+    homeWindow.setVisible(true);
+    homeWindow.toFront();
+    homeWindow.goToDeleteTab();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
@@ -410,7 +426,7 @@ public main_jframe() {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new main_jframe().setVisible(true);
+                new Main.Home().setVisible(true);
             }
         });
     }
