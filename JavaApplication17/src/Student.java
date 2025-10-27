@@ -1,6 +1,6 @@
 
 
-public class Student  {
+public class Student extends Person {
     
     private static int nextId = 1000;
     private int studentId;
@@ -11,26 +11,17 @@ public class Student  {
     private double gpa;
 
     public Student(String fullName, int age, String gender, String department, double gpa){
+        super(fullName,age,gender);
         this.studentId = nextId; 
         nextId++;              
-        this.fullName = fullName;
-        this.age = age;
-        this.gender = gender;
+        
         this.department = department;
         this.gpa = gpa;
     }
     public int getStudentId() {
         return studentId;
     }
-    public String getFullName() {
-        return fullName;
-    }
-    public int getAge() {
-        return age;
-    }
-    public String getGender() {
-        return gender;
-    }
+    
     public String getDepartment() {
         return department;
     }

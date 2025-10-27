@@ -1,2 +1,3 @@
 9408|doha|19|female|cce|3.0
-333|dfff|44|ff|ff|3.0
+9656|yasmina|20|female|CCE|3.0
+9565|frf|89|5|CCC|1.0

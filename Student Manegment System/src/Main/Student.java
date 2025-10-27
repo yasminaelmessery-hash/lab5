@@ -15,7 +15,6 @@ super(fullName, age, gender);
         this.gpa = gpa;
     }
 
-    // --------- Getters and Setters ---------
 
     public int getStudentID() {
         return studentID;

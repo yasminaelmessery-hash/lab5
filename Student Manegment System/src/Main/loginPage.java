@@ -79,38 +79,28 @@ public class loginPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+String expectedUsername = "admin";
+    String expectedPassword = "123456"; 
 
-        String expectedUsername = "admin";
-        String expectedPassword = "123456";
+    String username = jTextField1.getText();
+    String password = new String(jPasswordField1.getPassword());
 
-        String username = jTextField1.getText();
-        String password = new String(jPasswordField1.getPassword());
+    if (username.isEmpty() || password.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Username and Password fields cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Username and Password fields cannot be empty.",
-                    "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return; 
-        }
-
-        if (username.equals(expectedUsername) && password.equals(expectedPassword)) {
-        
-            Home menu = new Home();
-            menu.setVisible(true);
-
-            this.dispose(); 
-           
-        } else {
-          
-            JOptionPane.showMessageDialog(this,
-                    "Invalid Username or Password. Please try again.",
-                    "Login Error",
-                    JOptionPane.ERROR_MESSAGE);
-           
-            jPasswordField1.setText(""); 
-        }
-     
+    if (username.equals(expectedUsername) && password.equals(expectedPassword)) {
+    
+        JOptionPane.showMessageDialog(this, "Login Successful! Welcome to the system.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Home menu = new Home();
+        menu.setVisible(true);
+        this.dispose();
+    } else {
+       
+        JOptionPane.showMessageDialog(this, "Invalid Username or Password. Please try again.", "Login Error", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.setText("");
+    }   
     }//GEN-LAST:event_jButton1ActionPerformed
 public static void main(String args[]) {
 try {

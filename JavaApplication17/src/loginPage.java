@@ -93,13 +93,13 @@ public class loginPage extends javax.swing.JFrame {
         }
 
         if (username.equals(expectedUsername) && password.equals(expectedPassword)) {
-        
+            JOptionPane.showMessageDialog(null, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
             MenuPage menu = new MenuPage();
             menu.setVisible(true);
-
+            
             this.dispose(); 
-           
-        } else {
+           } else {
           
             JOptionPane.showMessageDialog(this,
                     "Invalid Username or Password. Please try again.",
