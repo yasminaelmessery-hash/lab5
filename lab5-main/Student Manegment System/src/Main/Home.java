@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Home extends javax.swing.JFrame {
+
+        private final List<Student> students = new ArrayList<>();
         private final StudentManagement manager = new StudentManagement();
 
         public Home() {
@@ -13,23 +15,120 @@ public class Home extends javax.swing.JFrame {
                 refreshTables(manager.getAllStudents());
               
 
+                update.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                updateActionPerformed(evt);
+                        }
+                });
                 delete.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 deleteActionPerformed(evt);
                         }
                 });
+                javax.swing.JPanel menuPanel = new javax.swing.JPanel();
+                javax.swing.JButton toUpdateBtn = new javax.swing.JButton("Update/Search");
+                javax.swing.JButton toDeleteBtn = new javax.swing.JButton("Delete");
+                javax.swing.JButton toAddBtn = new javax.swing.JButton("Add Student");
+                javax.swing.JButton toViewBtn = new javax.swing.JButton("View Student");
+                
+                toUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                goToUpdateSearch();
+                        }
+                });
+                toDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                goToDeleteTab();
+                        }
+                });
+                toAddBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                goToAdd();
+                        }
+                });
+                 toViewBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                goToView();
+                        }
+                });
+                jTabbedPane1.insertTab("Menu", null, menuPanel, null, 0);
+                menuPanel.add(toUpdateBtn);
+                menuPanel.add(toDeleteBtn);
+                menuPanel.add(toAddBtn);
+                menuPanel.add(toViewBtn);
+
+                javax.swing.JPanel addPanel = new javax.swing.JPanel(new java.awt.GridLayout(7, 2, 6, 6));
+                addPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 12, 12, 12));
+                addPanel.add(new javax.swing.JLabel("Student ID:"));
+                final javax.swing.JTextField idField = new javax.swing.JTextField();
+                addPanel.add(idField);
+                addPanel.add(new javax.swing.JLabel("Full Name:"));
+                final javax.swing.JTextField nameField = new javax.swing.JTextField();
+                addPanel.add(nameField);
+                addPanel.add(new javax.swing.JLabel("Age:"));
+                final javax.swing.JTextField ageField = new javax.swing.JTextField();
+                addPanel.add(ageField);
+                addPanel.add(new javax.swing.JLabel("Gender:"));
+                final javax.swing.JTextField genderField = new javax.swing.JTextField();
+                addPanel.add(genderField);
+                addPanel.add(new javax.swing.JLabel("Department:"));
+                final javax.swing.JTextField deptField = new javax.swing.JTextField();
+                addPanel.add(deptField);
+                addPanel.add(new javax.swing.JLabel("GPA:"));
+                final javax.swing.JTextField gpaField = new javax.swing.JTextField();
+                addPanel.add(gpaField);
+                final javax.swing.JButton addBtn = new javax.swing.JButton("Add");
+                addPanel.add(addBtn);
+                addBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                try {
+                                        int id = Integer.parseInt(idField.getText().trim());
+                                        String name = nameField.getText().trim();
+                                        int age = Integer.parseInt(ageField.getText().trim());
+                                        String gender = genderField.getText().trim();
+                                        String dept = deptField.getText().trim();
+                                        double gpa = Double.parseDouble(gpaField.getText().trim());
+                                        Student s = new Student(id, name, age, gender, dept, gpa);
+                                        String err = manager.addStudent(s);
+                                        if (err != null) {
+                                                javax.swing.JOptionPane.showMessageDialog(Home.this, err);
+                                                return;
+                                        }
+                                        refreshTables(manager.getAllStudents());
+                                        idField.setText(""); nameField.setText(""); ageField.setText("");
+                                        genderField.setText(""); deptField.setText(""); gpaField.setText("");
+                                        javax.swing.JOptionPane.showMessageDialog(Home.this, "Student added.");
+                                } catch (NumberFormatException ex) {
+                                        javax.swing.JOptionPane.showMessageDialog(Home.this, "ID/Age must be integers and GPA a number.");
+                                }
+                        }
+                });
+                jTabbedPane1.addTab("Add Student", addPanel);
+
+               
+                javax.swing.JPanel viewPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+                final javax.swing.table.DefaultTableModel viewModel = new javax.swing.table.DefaultTableModel(
+                        new String[]{"Student ID","Full Name","Gender","Departement","Age","GPA"}, 0) {
+                        public boolean isCellEditable(int r,int c){return false;}
+                };
+                final javax.swing.JTable viewTable = new javax.swing.JTable(viewModel);
+                javax.swing.JScrollPane viewScroll = new javax.swing.JScrollPane(viewTable);
+                javax.swing.JButton viewRefresh = new javax.swing.JButton("Refresh");
+                java.awt.event.ActionListener loadView = new java.awt.event.ActionListener(){
+                        public void actionPerformed(java.awt.event.ActionEvent e){
+                                viewModel.setRowCount(0);
+                                for (Student s : manager.getAllStudents()) {
+                                        viewModel.addRow(new Object[]{s.getStudentID(), s.getFullName(), s.getGender(), s.getDepartment(), s.getAge(), s.getGpa()});
+                                }
+                        }
+                };
+                viewRefresh.addActionListener(loadView);
+                viewPanel.add(viewScroll, java.awt.BorderLayout.CENTER);
+                viewPanel.add(viewRefresh, java.awt.BorderLayout.SOUTH);
+                jTabbedPane1.addTab("View Student", viewPanel);
+                loadView.actionPerformed(null);
+
                 jTabbedPane1.setSelectedIndex(0);       
-
-                // Home should only have Search and Delete: hide update inputs on the Search tab
-                if (jPanel5 != null) jPanel5.setVisible(false);
-                if (update != null) update.setVisible(false);
-                if (jLabel8 != null) jLabel8.setVisible(false);
-
-                // Rename the tab from "Update/Search" to just "Search"
-                int updIdx = getTabIndexByTitle("Update/Search");
-                if (updIdx >= 0) {
-                        jTabbedPane1.setTitleAt(updIdx, "Search");
-                }
         }
 
         /**
@@ -38,7 +137,8 @@ public class Home extends javax.swing.JFrame {
          * regenerated by the Form Editor.
          */
         @SuppressWarnings("unchecked")
-        // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+        // <editor-fold defaultstate="collapsed" desc="Generated
+        // Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
                 jPanel1 = new javax.swing.JPanel();
@@ -588,6 +688,13 @@ public class Home extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Student deleted.");
         }
 
+        private void initData() {
+                students.clear();
+                students.add(new Student(1001, "Alice Johnson", 20, "Female", "CS", 3.7));
+                students.add(new Student(1002, "Bob Smith", 22, "Male", "EE", 3.2));
+                students.add(new Student(1003, "Carol White", 21, "Female", "Math", 3.9));
+        }
+
         private void refreshTables(List<Student> list) {
                 DefaultTableModel m1 = (DefaultTableModel) Students.getModel();
                 DefaultTableModel m2 = (DefaultTableModel) Students1.getModel();
@@ -616,7 +723,33 @@ public class Home extends javax.swing.JFrame {
                 return -1;
         }
 
-        
+        public void goToUpdateSearch() {
+                int idx = getTabIndexByTitle("Update/Search");
+                if (idx >= 0)
+                        jTabbedPane1.setSelectedIndex(idx);
+        }
+         public void goToAdd() {
+                int idx = getTabIndexByTitle("Add Student");
+                if (idx >= 0)
+                        jTabbedPane1.setSelectedIndex(idx);
+        }
+         public void goToView() {
+                int idx = getTabIndexByTitle("View Student");
+                if (idx >= 0)
+                        jTabbedPane1.setSelectedIndex(idx);
+        }
+
+        public void goToMenu() {
+                int idx = getTabIndexByTitle("Menu");
+                if (idx >= 0)
+                        jTabbedPane1.setSelectedIndex(idx);
+        }
+
+        public void goToDeleteTab() {
+                int idx = getTabIndexByTitle("Delete");
+                if (idx >= 0)
+                        jTabbedPane1.setSelectedIndex(idx);
+        }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton Search;
