@@ -80,29 +80,86 @@ public class Home extends javax.swing.JFrame {
                 final javax.swing.JButton addBtn = new javax.swing.JButton("Add");
                 addPanel.add(addBtn);
                 addBtn.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                try {
-                                        int id = Integer.parseInt(idField.getText().trim());
-                                        String name = nameField.getText().trim();
-                                        int age = Integer.parseInt(ageField.getText().trim());
-                                        String gender = genderField.getText().trim();
-                                        String dept = deptField.getText().trim();
-                                        double gpa = Double.parseDouble(gpaField.getText().trim());
-                                        Student s = new Student(id, name, age, gender, dept, gpa);
-                                        String err = manager.addStudent(s);
-                                        if (err != null) {
-                                                javax.swing.JOptionPane.showMessageDialog(Home.this, err);
-                                                return;
-                                        }
-                                        refreshTables(manager.getAllStudents());
-                                        idField.setText(""); nameField.setText(""); ageField.setText("");
-                                        genderField.setText(""); deptField.setText(""); gpaField.setText("");
-                                        javax.swing.JOptionPane.showMessageDialog(Home.this, "Student added.");
-                                } catch (NumberFormatException ex) {
-                                        javax.swing.JOptionPane.showMessageDialog(Home.this, "ID/Age must be integers and GPA a number.");
-                                }
-                        }
-                });
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+       
+        String idStr = idField.getText().trim();
+        String name = nameField.getText().trim();
+        String ageStr = ageField.getText().trim();
+        String gender = genderField.getText().trim();
+        String dept = deptField.getText().trim();
+        String gpaStr = gpaField.getText().trim();
+
+        int studentID;
+        int age;
+        double gpa;
+try {
+    studentID = Integer.parseInt(idStr); 
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(Home.this, "ID must be a valid integer.");
+    return;
+}
+if (studentID < 9000 || studentID > 10000) {
+    JOptionPane.showMessageDialog(Home.this, "ID must be between 9000 and 10000, inclusive.");
+    return;
+}
+        if (name.isEmpty() || !name.matches("[A-Za-z\\s]+")) {
+            JOptionPane.showMessageDialog(Home.this,
+                    "Name must contain only letters and spaces, and cannot be empty.");
+            return;
+        }
+
+        if (dept.isEmpty() || !dept.matches("[A-Za-z\\s]+")) {
+            JOptionPane.showMessageDialog(Home.this,
+                    "Department must contain only letters and spaces, and cannot be empty.");
+            return;
+        }
+   
+        if (gender.isEmpty()) {
+            JOptionPane.showMessageDialog(Home.this, "Gender cannot be empty.");
+            return;
+        }
+
+        try {
+            age = Integer.parseInt(ageStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(Home.this, "Age must be an integer.");
+            return;
+        }
+        if (age < 18 || age > 90) {
+            JOptionPane.showMessageDialog(Home.this, "Age must be between 18 and 90.");
+            return;
+        }
+        String standardizedGender = gender.toUpperCase();
+        if (!standardizedGender.equals("MALE") &&!standardizedGender.equals("FEMALE") && !standardizedGender.equals("OTHER")) {
+            JOptionPane.showMessageDialog(Home.this, "Gender must be Male or Female.");
+            return;
+        }
+        try {
+            gpa = Double.parseDouble(gpaStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(Home.this, "GPA must be a number (e.g., 3.5).");
+            return;
+        }
+        if (gpa < 0.0 || gpa > 4.0) {
+            JOptionPane.showMessageDialog(Home.this, "GPA must be between 0.0 and 4.0.");
+            return;
+        }
+
+        Student s = new Student(studentID, name, age, gender, dept, gpa);
+        String err = manager.addStudent(s);
+        
+        if (err != null) {
+           
+            javax.swing.JOptionPane.showMessageDialog(Home.this, err);
+            return;
+        }
+        
+        refreshTables(manager.getAllStudents());
+        idField.setText(""); nameField.setText(""); ageField.setText("");
+        genderField.setText(""); deptField.setText(""); gpaField.setText("");
+        javax.swing.JOptionPane.showMessageDialog(Home.this, "Student added successfully!");
+    }
+});
                 jTabbedPane1.addTab("Add Student", addPanel);
 
                
